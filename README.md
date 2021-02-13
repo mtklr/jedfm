@@ -9,8 +9,7 @@ I'm using a Raspberry Pi 4 with latest Raspbian installed.
 Install `docker-ce` per your system.
 
 ```sh
-# install docker community edition
-apt install docker-ce
+sudo apt install docker-ce
 
 # everything else happens here
 cd jedfm
@@ -82,7 +81,7 @@ DOCK_TZ=:/etc/localtime
 
 ### why `DOCK_TZ=:/etc/localtime` in `./.env`?
 
-[Explanation](https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/). I haven't actually tested whether this applies to docker/containers as well.
+[Explanation](https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/). I imagine this applies to containers as well, haven't tested it.
 
 On the host (the Raspberry Pi), `/etc/environment` contains:
 
@@ -174,6 +173,8 @@ List ports defined in `services/*.yml` (check for duplicate ports in different s
 [ctop](https://github.com/bcicen/ctop) is a nice, simple way to see what's going on.
 
 ```
+sudo apt install docker-ctop
+
 ctop
 ```
 
