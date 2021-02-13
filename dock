@@ -1,0 +1,184 @@
+#!/usr/bin/env bash
+# diy docker-compose.yml gen
+# completion:
+#  complete -W'$(ls -1 ./services | sed 's/\.yml.*//')' ./dock
+
+# "strict mode"
+set -eu -o pipefail
+
+readonly me=${0##*/}
+
+DOCK_ENV=.env
+
+# shellcheck source=/dev/null
+. "$DOCK_ENV"
+
+usage () {
+	cat <<EOF >&2
+usage: $me [option] [name ...]
+Make a docker-compose.yml file from $DOCK_SERVICESDIR/*.yml.
+
+options:
+  -c         run \`docker-compose config\` to check docker-compose.yml
+  -d [NAME]  disable service NAME. No argument lists disabled services.
+  -e [NAME]  enable service NAME. No argument lists enabled services.
+  -g [NUM]   generate password NUM length (default: $DOCK_PASSLEN)
+  -h         show this help and exit
+  -l         list services
+  -p         list ports defined in services
+EOF
+}
+
+disable_service () {
+	local svc
+
+	if [ -z "${1:-}" ]; then
+		find "$DOCK_SERVICESDIR" -name '*.yml~' |\
+		sed 's/.*\///;s/\.yml~//'
+	fi
+
+	for svc; do
+		if [ -r "$DOCK_SERVICESDIR/$svc.yml" ]; then
+			mv "$DOCK_SERVICESDIR/$svc.yml" \
+			"$DOCK_SERVICESDIR/$svc.yml~" || exit 1
+		elif [ -r "$DOCK_SERVICESDIR/$svc.yml~" ]; then
+			echo "$me: $svc: already disabled" >&2
+			continue
+		else
+			echo "$me: $svc: not found" >&2
+			continue
+		fi
+
+		echo "$svc disabled"
+	done
+}
+
+enable_service () {
+	local svc
+
+	if [ -z "${1:-}" ]; then
+		find "$DOCK_SERVICESDIR" -name '*.yml' |\
+		sed 's/.*\///;s/\.yml//'
+	fi
+
+	for svc; do
+		if [ -r "$DOCK_SERVICESDIR/$svc.yml~" ]; then
+			mv "$DOCK_SERVICESDIR/$svc".yml~ \
+			"$DOCK_SERVICESDIR/$svc".yml || exit 1
+		elif [ -r "$DOCK_SERVICESDIR/$svc.yml" ]; then
+			echo "$me: $svc: already enabled" >&2
+			continue
+		else
+			echo "$me: $svc: not found" >&2
+			continue
+		fi
+
+		echo "$svc enabled"
+	done
+}
+
+# make docker-compose.yml from services/*.yml
+gen_yaml () {
+	local f svc
+
+	# add anything else for docker-compose.yml file here
+	cat <<EOF >"$DOCK_HOME/$DOCK_COMPOSEFILE"
+---
+version: "$DOCK_COMPOSEVERSION"
+services:
+EOF
+
+	for f in "$DOCK_SERVICESDIR"/*.yml; do
+		svc="${f##*/}"
+		svc="${svc/.yml}"
+		echo "$svc"
+
+		sed '/^---/d;/^version:/d;/^services:/d' "$f" >>"$DOCK_HOME/$DOCK_COMPOSEFILE"
+		echo >>"$DOCK_HOME/$DOCK_COMPOSEFILE"
+	done
+}
+
+# list ports for active services
+# ignores commented-out ports and disabled (*.yml~) files
+list_ports () {
+	grep -ir '[0-9]:[0-9]' "$DOCK_SERVICESDIR"/*.yml | sed '/#/d' |\
+	tr -s ' ' | cut -d' ' -f1-3 | tr -d "'\"" | sort -n -k3 |\
+	sed 's/.*services\///;s/\/compose.yml//;s/ #- / # /' | column -t
+}
+
+# https://www.howtogeek.com/howto/30184/10-ways-to-generate-a-random-password-from-the-command-line/
+gen_password () {
+	local len="${1:-$DOCK_PASSLEN}"
+
+	# "!" negates exit status 141, from -o pipefail, above
+	! < /dev/urandom tr -dc '[:alnum:]' | head -c"$len"
+	echo
+}
+
+# options
+config=0
+disablesvc=0
+enablesvc=0
+genpw=0
+list=0
+ports=0
+
+while getopts ":cdeghlp" opt; do
+	case $opt in
+		c ) config=1 ;;
+		d ) disablesvc=1; enablesvc=1 ;;
+		e ) enablesvc=1; disablesvc=0 ;;
+		g ) genpw=1 ;;
+		h ) usage; exit 0 ;;
+		l ) list=1 ;;
+		p ) ports=1 ;;
+		? ) usage; exit 1 ;;
+	esac
+done
+
+shift "$((OPTIND - 1))"
+
+# user rw only
+chmod 700 "$DOCK_SERVICESDIR" 2>/dev/null
+chmod 600 "$DOCK_SERVICESDIR"/* 2>/dev/null
+chmod 600 "$DOCK_ENV" 2>/dev/null
+
+if [ "$genpw" -eq 1 ]; then
+	gen_password "${1:-$DOCK_PASSLEN}"
+	exit
+fi
+
+if [ "$list" -eq 1 ]; then
+	find "$DOCK_SERVICESDIR" -regex '.*.yml~?' |\
+	sed 's/.*\///;s/\.yml//'
+	exit
+fi
+
+if [ "$ports" -eq 1 ]; then
+	list_ports
+	exit
+fi
+
+if [ "$disablesvc" -eq 1 ]; then
+	enablesvc=0
+	disable_service "$@"
+	echo
+fi
+
+if [ "$enablesvc" -eq 1 ]; then
+	disablesvc=0
+	enable_service "$@"
+	echo
+fi
+
+gen_yaml
+
+# user rw only
+chmod 600 "$DOCK_HOME/$DOCK_COMPOSEFILE" 2>/dev/null
+
+if [ "$config" -eq 1 ]; then
+	echo
+	docker-compose config
+fi
+
+exit
