@@ -102,6 +102,8 @@ Otherwise, set `DOCK_TZ=America/New_York` to the appropriate timezone in `./.env
 # - /etc/localtime:/etc/localtime:ro in services/*
 ```
 
+* I just noticed that `echo $TZ` doesn't return anything, even though `/etc/environment` contains `TZ=:/etc/localtime`. I'm pretty sure this was working before... `/usr/lib/environment.d/99-environment.conf` is symlinked to `/etc/environment`... at anyrate, `export $TZ=:/etc/localtime` takes care of it for now...
+
 ## usage
 
 ### summary
