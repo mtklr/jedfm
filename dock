@@ -29,6 +29,12 @@ options:
 EOF
 }
 
+# first arg is message, second is exit status
+die () {
+	echo "$me: ${1:-error}" >&2
+	exit "${2:-1}"
+}
+
 disable_service () {
 	local svc
 
@@ -137,6 +143,9 @@ while getopts ":cdeghlp" opt; do
 done
 
 shift "$((OPTIND - 1))"
+
+[ -d "$DOCK_SERVICESDIR" ] || die "$DOCK_SERVICESDIR: No such directory"
+stat "$DOCK_SERVICESDIR"/*.yml >/dev/null 2>&1 || die "$DOCK_SERVICESDIR: No .yml files"
 
 # user rw only
 chmod 700 "$DOCK_SERVICESDIR" 2>/dev/null
