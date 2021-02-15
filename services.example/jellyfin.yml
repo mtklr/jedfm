@@ -1,0 +1,28 @@
+  jellyfin:
+    image: ghcr.io/linuxserver/jellyfin:bionic
+    container_name: jellyfin
+    restart: unless-stopped
+    # network_mode: host
+    # devices:
+      # - /dev/dri:/dev/dri # optional, intel hw accel
+      # - /dev/vcsm-cma:/dev/vcsm-cma # optional, pi openmax hw accel
+      # - /dev/vchiq:/dev/vchiq # optional, pi openmax hw accel
+      # - /dev/video10:/dev/video10 # optional, pi v4l2 hw accel
+      # - /dev/video11:/dev/video11 # optional, pi v4l2 hw accel
+      # - /dev/video12:/dev/video12 # optional, pi v4l2 hw accel
+    environment:
+      - PGID=$DOCK_GID
+      - PUID=$DOCK_UID
+      - TZ=$DOCK_TZ
+      # - JELLYFIN_PublishedServerUrl=$DOCK_IP # optional
+    ports:
+      - "8096:8096"
+      - "8920:8920" # optional
+      - "7359:7359/udp" # optional
+      - "1900:1900/udp" # optional
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      # - /opt/vc/lib:/opt/vc/lib # optional, pi openmax hw accel
+      - $DOCK_CONFDIR/jellyfin/config:/config
+      - $DOCK_CONFDIR/jellyfin/cache:/cache
+      - $DOCK_STORAGEDIR/media:/media

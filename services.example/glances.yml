@@ -1,0 +1,16 @@
+  glances:
+    image: nicolargo/glances
+    container_name: glances
+    restart: unless-stopped
+    environment:
+      - PUID=$DOCK_UID
+      - PGID=$DOCK_GID
+      - TZ=$DOCK_TZ
+      - GLANCES_OPT=-w
+    pid: host
+    ports:
+      - "61208:61208"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - $DOCK_CONFDIR/glances/conf:/glances/conf
+      - /var/run/docker.sock:/var/run/docker.sock:ro
