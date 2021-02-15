@@ -28,12 +28,12 @@ Example: `./services/pihole.yml`:
     cap_add:
       - NET_ADMIN # Recommended but not required (DHCP needs NET_ADMIN)
     environment:
-      - ADMIN_EMAIL=$DOCK_MAIL_TO
-      - IPv6=false
-      - PIHOLE_DNS_=127.0.0.1;1.1.1.1
       - PUID=$DOCK_UID
       - PGID=$DOCK_GID
       - TZ=$DOCK_TZ
+      - ADMIN_EMAIL=$DOCK_MAIL_TO
+      - IPv6=false
+      - PIHOLE_DNS_=127.0.0.1;1.1.1.1
       # - WEBPASSWORD=changeme # set a secure password here or it will be random
     ports:
       - "53:53/tcp"
