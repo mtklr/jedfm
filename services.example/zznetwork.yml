@@ -1,0 +1,17 @@
+# https://nginxproxymanager.com/advanced-config/#best-practice-use-a-docker-network
+# comment out "ports:" entries in ./*.yml for this setup
+networks:
+  default:
+    external:
+      name: jedfmnet
+  # seperate network for pihole and whatever else
+  # https://blog.oddbit.com/post/2018-03-12-using-docker-macvlan-networks/
+  wharfnet:
+    driver: macvlan
+    driver_opts:
+      parent: eth0
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+          ip_range: 192.168.1.17/28
+          gateway: 192.168.1.1
