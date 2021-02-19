@@ -171,12 +171,14 @@ fi
 if [ "$disablesvc" -eq 1 ]; then
 	enablesvc=0
 	disable_service "$@"
+	[ -z "${1:-}" ] && exit
 	echo
 fi
 
 if [ "$enablesvc" -eq 1 ]; then
 	disablesvc=0
 	enable_service "$@"
+	[ -z "${1:-}" ] && exit
 	echo
 fi
 
