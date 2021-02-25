@@ -79,7 +79,7 @@ DOCK_PASSLEN=16
 DOCK_TZ=:/etc/localtime
 ```
 
-### why `DOCK_TZ=:/etc/localtime` in `./.env`?
+### why `DOCK_TZ=:/etc/localtime`?
 
 [Explanation](https://blog.packagecloud.io/eng/2017/02/21/set-environment-variable-save-thousands-of-system-calls/). I imagine this applies to containers as well, haven't tested it.
 
@@ -359,7 +359,7 @@ Under "Proxy Hosts," choose "Add Proxy Host."
 
 Domain Names: glances.host.home
 
-Scheme: http (not "https"...)
+Scheme: http (not "https")
 
 Forward Hostname/IP: 192.168.1.235 (IP address of the docker host)
 
@@ -419,7 +419,7 @@ Pi-hole is annoying in that it needs port 80 and 443, which NPM uses already, bu
 3. Put it on a [macvlan network](https://docs.docker.com/network/network-tutorial-macvlan/) so it appears as another device.
 4. ?...
 
-##### on the router...
+##### on the router
 
 This all depends on how your network is configured. Mine is 192.168.1.0/24, so this is what I did ([ipcalc](http://jodies.de/ipcalc) helps):
 
@@ -452,9 +452,9 @@ summary:
 192.168.1.255 - broadcast
 ```
 
-##### on the docker host...
+##### on the docker host
 
-Ok... in `services/zznetwork.yml`, add:
+In `services/zznetwork.yml`, add:
 
 ```yaml
   # separate network for pihole, etc.
