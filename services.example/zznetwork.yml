@@ -4,7 +4,7 @@ networks:
   default:
     external:
       name: jedfmnet
-  # seperate network for pihole and whatever else
+  # separate network for pihole and whatever else
   # https://blog.oddbit.com/post/2018-03-12-using-docker-macvlan-networks/
   wharfnet:
     driver: macvlan
