@@ -193,6 +193,7 @@ alias d='docker'
 alias dcon='docker container'
 alias dcc='docker-compose config'
 alias dcp='docker-compose'
+alias dcu='docker-compose pull && docker-compose up -d'
 alias dip="docker ps -q | xargs -n 1 docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}} {{ .Name }}' | sed 's/ \// /'"
 
 # completion
@@ -415,9 +416,11 @@ A couple of things need to be changed:
 Pi-hole is annoying in that it needs port 80 and 443, which NPM uses already, but there are at least three ways to get them to work together.
 
 1. Buy another Raspberry Pi to run Pi-hole on.
-2. Modify [pi-hole docker](https://github.com/pi-hole/docker-pi-hole) config so it [works with a proxy](https://github.com/pi-hole/docker-pi-hole/blob/master/docker-compose-jwilder-proxy.yml).
-3. Put it on a [macvlan network](https://docs.docker.com/network/network-tutorial-macvlan/) so it appears as another device.
-4. ?...
+2. Don't use the [web dashboard](https://docs.pi-hole.net/main/prerequisites/#ports). It's cool, but optional.
+3. Change the [lighttpd listening port](https://docs.pi-hole.net/guides/webserver/caddy/).
+4. Modify [pi-hole docker](https://github.com/pi-hole/docker-pi-hole) config so it [works with a proxy](https://github.com/pi-hole/docker-pi-hole/blob/master/docker-compose-jwilder-proxy.yml).
+5. Put it on a [macvlan network](https://docs.docker.com/network/network-tutorial-macvlan/) so it appears as another device.
+6. ?...
 
 ##### on the router
 
