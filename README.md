@@ -182,7 +182,7 @@ ctop
 
 ### updates
 
-[diun](https://crazymax.dev/diun/) checks containers for updates.
+[Diun](https://crazymax.dev/diun/) checks containers for updates.
 
 ## aliases
 
@@ -535,9 +535,9 @@ Your mileage may vary. I apologize for any unintentional errors.
 
 [name resolution and dns on home networks](https://stevessmarthomeguide.com/name-resolution-and-dns-on-home-networks/)
 
-[run pihole in docker on ubuntu with reverse proxy](https://www.smarthomebeginner.com/run-pihole-in-docker-on-ubuntu-with-reverse-proxy/)
-
 [reverse proxy with https without opening ports](https://selfhostedhome.com/reverse-proxy-with-https-without-opening-ports/)
+
+[run pihole in docker on ubuntu with reverse proxy](https://www.smarthomebeginner.com/run-pihole-in-docker-on-ubuntu-with-reverse-proxy/)
 
 [SWAG setup](https://docs.linuxserver.io/general/swag)
 
