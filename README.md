@@ -515,7 +515,7 @@ Some additional setup is necessary so the docker host can "see" the macvlan netw
 
     Forward Port: 80
 
-    Add SSL etc., configure as above under [Add Proxy Host](#Add Proxy Host).
+    Add SSL etc., configure as above under [Add Proxy Host](#add-proxy-host).
 
 ## whew
 
