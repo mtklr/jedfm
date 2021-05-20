@@ -22,7 +22,7 @@ options:
   -c         run \`docker-compose config\` to check docker-compose.yml
   -d [NAME]  disable service NAME. No argument lists disabled services.
   -e [NAME]  enable service NAME. No argument lists enabled services.
-  -g [NUM]   generate password NUM length (default: $DOCK_PASSLEN)
+  -g [NUM]   generate password NUM characters long (default: 16)
   -h         show this help and exit
   -l         list services
   -p         list ports defined in services
