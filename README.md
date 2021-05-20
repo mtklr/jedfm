@@ -96,13 +96,9 @@ volumes:
   - /etc/localtime:/etc/localtime:ro
 ```
 
-Otherwise, set `DOCK_TZ=America/New_York` to the appropriate timezone in `./.env` and comment out or remove this entry under `volumes:`
+Otherwise, set `DOCK_TZ=America/New_York` to the appropriate timezone in `./.env` and comment out or remove the above entry.
 
-```yaml
-# - /etc/localtime:/etc/localtime:ro in services/*
-```
-
-* I `ssh` to the docker host, and just noticed that `TZ` isn't set, even though `/etc/environment` contains `TZ=:/etc/localtime`. This happens to be because I'm connecting to the docker host using `ssh`, and `/etc/ssh/sshd_config` contains `UsePAM no` - I'm using key-based login, and this is a recommended setting. However, `UsePAM yes` restores the environment setup (`TZ` is now set when I connect). This may have other implications, [use what you think is best](https://duckduckgo.com/?t=ffab&q=ssh+usepam&ia=web).
+* I `ssh` to the docker host, and just noticed that `TZ` isn't set, even though `/etc/environment` contains `TZ=:/etc/localtime`. This happens to be because I'm connecting to the docker host using `ssh`, and `/etc/ssh/sshd_config` contains `UsePAM no`. I'm using key-based login, and this is a recommended setting. However, `UsePAM yes` restores the environment setup (`TZ` is now set when I connect). This may have other implications, [use what you think is best](https://duckduckgo.com/?t=ffab&q=ssh+usepam&ia=web).
 
 ## usage
 
@@ -114,7 +110,7 @@ options:
   -c         run `docker-compose config` to check docker-compose.yml
   -d [NAME]  disable service NAME. No argument lists disabled services.
   -e [NAME]  enable service NAME. No argument lists enabled services.
-  -g [NUM]   generate password NUM length (default: 16)
+  -g [NUM]   generate password NUM characters long (default: 16)
   -h         show this help and exit
   -l         list services
   -p         list ports defined in services
@@ -131,12 +127,6 @@ Run whenever `docker-compose.yml` should be updated.
 ```
 
 `./dock -c` also runs `docker-container config` to check the configuration.
-
-### start
-
-```console
-docker-compose up -d [name]
-```
 
 ### disable
 
@@ -168,6 +158,12 @@ List ports defined in `services/*.yml` (check for duplicate ports in different s
 
 ```console
 ./dock -p
+```
+
+### start docker
+
+```console
+docker-compose up -d [name]
 ```
 
 ### ctop
